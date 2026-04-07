@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mega Folder Checker</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input { width: 400px; padding: 8px; }
+    button { padding: 8px 12px; margin-left: 8px; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Check Mega Folder URL</h2>
+  <input type="text" id="megaUrl" placeholder="Enter Mega folder URL">
+  <button onclick="checkMega()">Check</button>
+  <p id="result"></p>
+
+  <script>
+    async function checkMega() {
+      const url = document.getElementById("megaUrl").value;
+      const result = document.getElementById("result");
+
+      try {
+        // Call backend function hosted on Vercel
+        const response = await fetch("/api/check?url=" + encodeURIComponent(url));
+        const data = await response.json();
+
+        if (data.status === "available") {
+          result.textContent = "✅ Folder is available!";
+        } else if (data.status === "invalid") {
+          result.textContent = "❌ Folder is invalid or deleted.";
+        } else {
+          result.textContent = "⚠️ Error: " + data.message;
+        }
+      } catch (error) {
+        result.textContent = "❌ Could not reach backend.";
+      }
+    }
+  </script>
+</body>
+</html>
